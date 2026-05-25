@@ -1,10 +1,6 @@
-"""
-CodeAlpha Internship - Task 1: Credit Scoring Model
-====================================================
-Objective: Predict an individual's creditworthiness using past financial data.
-Approach: Logistic Regression, Decision Tree, Random Forest, Gradient Boosting
-Author: Samah AZIZ
-"""
+# Credit Scoring Model - CodeAlpha ML Internship
+# Predicting creditworthiness using classification algorithms
+# Author: Samah AZIZ
 
 import numpy as np
 import pandas as pd
@@ -22,9 +18,7 @@ from sklearn.metrics import (
 import warnings
 warnings.filterwarnings('ignore')
 
-# ============================================================
-# 1. DATA GENERATION (Synthetic Credit Scoring Dataset)
-# ============================================================
+# --- Generating synthetic credit dataset ---
 print("=" * 60)
 print("TASK 1: CREDIT SCORING MODEL")
 print("=" * 60)
@@ -60,16 +54,12 @@ score = (
 )
 data['creditworthy'] = (score > score.median()).astype(int)
 
-print(f"\n[DATA] Dataset shape: {data.shape}")
-print(f"[DATA] Class distribution:\n{data['creditworthy'].value_counts()}")
-print(f"\n[DATA] First 5 rows:\n{data.head()}")
+print(f"\nDataset shape: {data.shape}")
+print(f"Class distribution:\n{data['creditworthy'].value_counts()}")
+print(f"\nFirst 5 rows:\n{data.head()}")
 
-# ============================================================
-# 2. EXPLORATORY DATA ANALYSIS (EDA)
-# ============================================================
-print("\n" + "=" * 60)
-print("2. EXPLORATORY DATA ANALYSIS")
-print("=" * 60)
+# --- EDA ---
+print("\n--- Exploratory Data Analysis ---")
 
 # Correlation heatmap
 fig, axes = plt.subplots(1, 2, figsize=(16, 6))
@@ -90,7 +80,7 @@ axes[1].set_ylabel('Count')
 plt.tight_layout()
 plt.savefig('eda_analysis.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("[OK] EDA plots saved to 'eda_analysis.png'")
+print("EDA plots saved.")
 
 # Feature importance visualization
 fig, axes = plt.subplots(2, 3, figsize=(18, 10))
@@ -110,14 +100,10 @@ plt.suptitle('Feature Distribution by Creditworthiness', fontsize=16, fontweight
 plt.tight_layout()
 plt.savefig('feature_distributions.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("[OK] Feature distributions saved to 'feature_distributions.png'")
+print("Feature distributions saved.")
 
-# ============================================================
-# 3. DATA PREPROCESSING
-# ============================================================
-print("\n" + "=" * 60)
-print("3. DATA PREPROCESSING")
-print("=" * 60)
+# --- Preprocessing ---
+print("\n--- Preprocessing ---")
 
 X = data.drop('creditworthy', axis=1)
 y = data['creditworthy']
@@ -132,16 +118,12 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-print(f"[OK] Train set: {X_train_scaled.shape[0]} samples")
-print(f"[OK] Test set:  {X_test_scaled.shape[0]} samples")
-print(f"[OK] Features:  {X_train_scaled.shape[1]}")
+print(f"Train set: {X_train_scaled.shape[0]} samples")
+print(f"Test set:  {X_test_scaled.shape[0]} samples")
+print(f"Features:  {X_train_scaled.shape[1]}")
 
-# ============================================================
-# 4. MODEL TRAINING & EVALUATION
-# ============================================================
-print("\n" + "=" * 60)
-print("4. MODEL TRAINING & EVALUATION")
-print("=" * 60)
+# --- Training models ---
+print("\n--- Training & Evaluation ---")
 
 models = {
     'Logistic Regression': LogisticRegression(max_iter=1000, random_state=42),
@@ -180,12 +162,8 @@ for name, model in models.items():
     print(f"  ROC-AUC:   {auc:.4f}")
     print(f"  CV Accuracy: {cv_scores.mean():.4f} (+/- {cv_scores.std():.4f})")
 
-# ============================================================
-# 5. MODEL COMPARISON
-# ============================================================
-print("\n" + "=" * 60)
-print("5. MODEL COMPARISON")
-print("=" * 60)
+# --- Comparison ---
+print("\n--- Model Comparison ---")
 
 comparison_df = pd.DataFrame({
     name: {k: v for k, v in vals.items() if k != 'y_proba'}
@@ -194,16 +172,11 @@ comparison_df = pd.DataFrame({
 
 print(comparison_df.to_string())
 
-# Best model
 best_model_name = comparison_df['ROC-AUC'].idxmax()
-print(f"\n[BEST] Best Model: {best_model_name} (ROC-AUC: {comparison_df.loc[best_model_name, 'ROC-AUC']:.4f})")
+print(f"\nBest Model: {best_model_name} (ROC-AUC: {comparison_df.loc[best_model_name, 'ROC-AUC']:.4f})")
 
-# ============================================================
-# 6. VISUALIZATIONS
-# ============================================================
-print("\n" + "=" * 60)
-print("6. GENERATING VISUALIZATIONS")
-print("=" * 60)
+# --- Plots ---
+print("\n--- Generating plots ---")
 
 # --- ROC Curves ---
 fig, axes = plt.subplots(1, 2, figsize=(16, 6))
@@ -241,7 +214,7 @@ axes[1].grid(True, alpha=0.3, axis='y')
 plt.tight_layout()
 plt.savefig('model_comparison.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("[OK] Model comparison plots saved to 'model_comparison.png'")
+print("Model comparison plots saved.")
 
 # --- Confusion Matrix for best model ---
 best_model = models[best_model_name]
@@ -258,7 +231,7 @@ ax.set_title(f'Confusion Matrix — {best_model_name}', fontsize=14, fontweight=
 plt.tight_layout()
 plt.savefig('confusion_matrix.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("[OK] Confusion matrix saved to 'confusion_matrix.png'")
+print("Confusion matrix saved.")
 
 # --- Feature Importance (Random Forest) ---
 rf_model = models['Random Forest']
@@ -271,16 +244,10 @@ ax.set_xlabel('Importance', fontsize=12)
 plt.tight_layout()
 plt.savefig('feature_importance.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("[OK] Feature importance saved to 'feature_importance.png'")
+print("Feature importance saved.")
 
-# ============================================================
-# 7. CLASSIFICATION REPORT (Best Model)
-# ============================================================
-print("\n" + "=" * 60)
-print(f"7. DETAILED CLASSIFICATION REPORT — {best_model_name}")
-print("=" * 60)
+# --- Final report ---
+print(f"\n--- Classification Report ({best_model_name}) ---")
 print(classification_report(y_test, y_pred_best, target_names=['Bad Credit', 'Good Credit']))
 
-print("\n" + "=" * 60)
-print("[OK] TASK 1 COMPLETED SUCCESSFULLY!")
-print("=" * 60)
+print("Done!")
